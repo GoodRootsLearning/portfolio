@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Phrasal Verbs - Movement and Transportation / Practice Quiz</title>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+<style>
+/* General Body and MDL Tabs Styling */
+body {
+    margin: 0; /* Remove default body margin */
+    background-color: #fff; /* Set a white background for consistency */
+    font-family: 'Roboto', sans-serif; /* Ensure consistent font */
+    color: #333; /* Default text color */
+}
+
+.video-container {
+  margin-bottom: 20px; /* Space below the video */
+  display: flex;
+  justify-content: center; /* Center the video iframe */
+}
+
+.video-container iframe {
+    display: block; /* Remove extra space below iframe */
+}
+
+
+.verb {
+  color: red;
+}
+
+.mdl-tabs {
+  /* Style your tabs navigation */
+  font-size: 20px;    /* Adjusted font size for tabs */
+  font-weight: 500;  /* Adjust font weight */
+  width: 100%; /* Make tabs take full width */
+}
+
+.mdl-tabs__tab-bar {
+    justify-content: center; /* Center the tabs themselves */
+}
+
+.mdl-tabs__tab {
+    /* Adjust individual tab spacing/padding if needed */
+}
+
+
+.mdl-tabs__tab-panel {
+  display: none;
+  overflow-y: auto;
+  padding: 20px; /* Added padding to all tab panels */
+  box-sizing: border-box; /* Include padding in element's total width and height */
+  background-color: #fff; /* Explicitly set panel background to white */
+}
+
+.mdl-tabs__tab-panel.is-active {
+  display: block;
+}
+
+/* Vocabulary Grid Styles */
+#vocabulary-grid {
+  margin-top: 20px;
+  margin-bottom: 25px;
+  margin-left: auto; /* Center the grid */
+  margin-right: auto; /* Center the grid */
+  display: grid;
+  /* Max 4 columns: Set a max-width and use auto-fit */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-auto-rows: minmax(200px, auto);
+  grid-gap: 20px;
+  justify-items: stretch;
+  max-width: 1100px; /* Approximate width for 4 cards + gaps (4*250 + 3*20 = 1060, using 1100 for safety) */
+}
+
+/* Flashcard Styles (remain largely the same) */
+.flashcard {
+  cursor: pointer;
+  width: 100%;
+  height: auto;
+  min-height: 200px;
+  perspective: 1000px;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.front, .back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 2px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.front {
+  background-color: #fff;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  text-align: center;
+}
+
+.back {
+  background-color: #3f51b5; /* MDL Primary color */
+  color: white;
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  overflow: hidden;
+}
+
+.flashcard:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.back hr {
+  margin: 10px 0;
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.front p {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin: 0;
+}
+
+.back p {
+  font-size: 0.9em;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.flashcard.flipped {
+  transform: rotateY(180deg);
+}
+
+/* Transcript Styles */
+#transcript {
+  /* Styles already present, base panel padding applies */
+}
+
+
+/* Styles for Practice Tab (integrated and adjusted) */
+#practice {
+   background-color: #fff; /* Match other panels */
+   text-align: left; /* Default text alignment */
+}
+
+/* Wrapper to contain and center the quiz content */
+.quiz-area {
+    width: 100%; /* Use full width of the panel */
+    max-width: 800px; /* Max width for larger screens */
+    margin: 0 auto; /* Center the block within the panel */
+}
+
+#practice h1 {
+    font-family: 'Roboto', sans-serif; /* Match main font */
+    text-align: center; /* Center the main quiz title */
+    margin-top: 0;
+    margin-bottom: 30px;
+    font-size: 2em;
+    color: #3f51b5; /* Use primary color for heading */
+}
+
+#practice h2 {
+    font-family: 'Roboto', sans-serif; /* Match main font */
+    text-align: left;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+}
+
+#practice h3 {
+     font-family: 'Roboto', sans-serif; /* Match main font */
+     text-align: left;
+     margin-bottom: 15px;
+     font-size: 1.2em;
+}
+
+#practice p {
+    margin-bottom: 15px; /* Space between sentences */
+    font-family: 'Roboto', sans-serif; /* Match main font */
+    text-align: left;
+    line-height: 1.6; /* Increased line height for readability */
+    color: #333; /* Ensure text color is readable */
+}
+
+/* Container for the pool of draggable verbs */
+.draggable-pool {
+    display: flex;
+    flex-wrap: wrap; /* Allow items to wrap */
+    justify-content: center; /* Center the pool */
+    margin-bottom: 30px;
+    padding: 10px;
+    background-color: #e0e0e0; /* Light grey background for the pool */
+    border-radius: 4px;
+    gap: 8px; /* Space between draggable items */
+}
+
+
+/* Styling for the draggable elements (the verbs) */
+.draggable {
+  font-family: 'Roboto', sans-serif; /* Match main font */
+  /* Adjusted width based on verb length, let's use auto or min-content */
+  width: auto; /* Allow width to fit content */
+  min-width: 80px; /* Minimum width */
+  max-width: 150px; /* Maximum width to prevent overflow */
+  height: 30px; /* Increased height */
+  background-color: #47A130; /* Green */
+  color: white;
+  text-align: center;
+  padding: 0 10px; /* Adjusted padding */
+  /* margin handled by gap in .draggable-pool */
+  cursor: grab;
+  border-radius: 4px; /* Slightly increased border-radius */
+  box-sizing: border-box;
+  display: inline-flex; /* Use inline-flex */
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-weight: bold;
+  font-size: 1em; /* Adjusted font size */
+  transition: background-color 0.3s; /* Smooth transition */
+}
+
+.draggable.dragging {
+    opacity: 0.6; /* Adjust opacity when dragging */
+}
+
+/* Styling for the drop zones (blanks in sentences) */
+.dropzone {
+  display: inline-block; /* Allow dropzone to sit within text */
+  vertical-align: middle; /* Align with text baseline */
+  background-color: #f5f5f5; /* Light grey */
+  border: 2px dashed #ccc; /* Lighter, dashed border */
+  width: 120px; /* Width wide enough for verbs */
+  min-height: 35px; /* Ensure minimum height */
+  padding: 3px;
+  margin: 0 5px; /* Space around the blank */
+  display: inline-flex; /* Use inline-flex for centering dropped item */
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  transition: border-color 0.3s, background-color 0.3s; /* Smooth transition */
+}
+
+.dropzone.draggingover {
+    border-color: #3f51b5; /* Highlight with primary color on drag over */
+    background-color: #e8eaf6; /* Light primary background */
+}
+
+/* Style for dropped correct/incorrect items */
+.dropzone .draggable {
+    margin: 0; /* Remove margin on dropped item */
+    width: 100%; /* Make dropped item fill dropzone width */
+    height: 100%; /* Make dropped item fill dropzone height */
+    font-size: 0.9em; /* Smaller font inside dropzone */
+}
+
+.dropzone.correct {
+    background-color: #d4edda; /* Light green */
+    border-color: #28a745; /* Green border */
+}
+
+.dropzone.incorrect {
+    background-color: #f8d7da; /* Light red */
+    border-color: #dc3545; /* Red border */
+}
+
+/* Style for Total Points */
+#practice .total-points-container {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #3f51b5; /* Use primary color */
+}
+</style>
+</head>
+<body>
+
+<div class="video-container">
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</div>
+
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+  <div class="mdl-tabs__tab-bar">
+    <a href="#vocabulary" class="mdl-tabs__tab is-active">Phrases</a>
+    <a href="#transcript" class="mdl-tabs__tab">Transcript</a>
+    <a href="#practice" class="mdl-tabs__tab">Practice</a>
+  </div>
+
+  <div class="mdl-tabs__panel is-active" id="vocabulary">
+    <div id="vocabulary-grid">
+      <div class="flashcard">
+        <div class="front"><p>To pick up</p></div>
+        <div class="back">
+          <p>Definition: To retrieve someone or something in a vehicle.</p>
+          <p>Example: I'll <span class="verb">pick up</span> the kids from school at 3 PM.</p>
+        </div>
+      </div>
+
+      <div class="flashcard">
+        <div class="front"><p>To drop off</p></div>
+        <div class="back">
+          <p>Definition: To leave someone or something somewhere.</p>
+          <p>Example: Can you <span class="verb">drop off</span> this letter at the post office?</p>
+        </div>
+      </div>
+
+      <div class="flashcard">
+        <div class="front"><p>To get in</p></div>
+        <div class="back">
+          <p>Definition: To enter a vehicle (usually a car).</p>
+          <p>Example: <span class="verb">Get in</span> the car, we're going to be late!</p>
+        </div>
+      </div>
+
+      <div class="flashcard">
+        <div class="front"><p>To get out of</p></div>
+        <div class="back">
+          <p>Definition: To exit a vehicle (usually a car).</p>
+          <p>Example: Be careful when you <span class="verb">get out of</span> the taxi.</p>
+        </div>
+      </div>
+
+      <div class="flashcard">
+        <div class="front"><p>To speed up</p></div>
+        <div class="back">
+          <p>Definition: To accelerate. To increase the velocity of a vehicle.</p>
+          <p>Example: The driver had to <span class="verb">speed up</span> to pass the truck.</p>
+        </div>
+      </div>
+
+      <div class="flashcard">
+        <div class="front"><p>To slow down</p></div>
+        <div class="back">
+          <p>Definition: To decelerate. To reduce the velocity of a vehicle.</p>
+          <p>Example: You need to <span class="verb">slow down</span>, there's a school zone ahead.</p>
+        </div>
+      </div>
+
+      <div class="flashcard">
+        <div class="front"><p>To drive by</p></div>
+        <div class="back">
+          <p>Definition: To pass by something, somewhere, or someone in a vehicle.</p>
+          <p>Example: We <span class="verb">drove by</span> the old house on our way to the beach.</p>
+        </div>
+      </div>
+
+      <div class="flashcard">
+        <div class="front"><p>To pull over</p></div>
+        <div class="back">
+          <p>Definition: To move a vehicle to the side of the road and stop.</p>
+          <p>Example: The police officer told the driver to <span class="verb">pull over</span>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mdl-tabs__panel" id="transcript">
+    <p>
+      Yesterday, my friend called and asked if I could <span class="verb">pick up</span> his laptop from the repair shop. I hopped in my car and <span class="verb">drove by</span> the bakery, noticing their delicious pastries. After retrieving the laptop, I had to <span class="verb">drop off</span> a package at the post office across town. Traffic was surprisingly light, so I didn't need to <span class="verb">speed up</span> much on the highway.
+    </p>
+
+    <p>
+      As I approached my destination, I noticed a car struggling on the side of the road. I decided to <span class="verb">pull over</span> to see if they needed help. A woman <span class="verb">got out</span> of the vehicle, looking frustrated. After a few minutes of trying to assist, we realized the issue was beyond a quick fix. Eventually, her brother arrived, and she <span class="verb">got in</span> his car, and they slowly <span class="verb">slowed down</span> as they merged back into traffic.
+    </p>
+  </div>
+
+  <div class="mdl-tabs__panel" id="practice">
+    <div class="quiz-area">
+      <h1>Phrasal Verbs of Transportation Practice Quiz</h1>
+
+      <h2>Drag and drop the correct phrasal verb into the blank to complete each sentence.</h2>
+
+      <div class="draggable-pool">
+        <div class="draggable" draggable="true" data-correct="pick up">pick up</div>
+        <div class="draggable" draggable="true" data-correct="drive by">drive by</div>
+        <div class="draggable" draggable="true" data-correct="drop off">drop off</div>
+        <div class="draggable" draggable="true" data-correct="speed up">speed up</div>
+        <div class="draggable" draggable="true" data-correct="pull over">pull over</div>
+        <div class="draggable" draggable="true" data-correct="get out of">get out of</div>
+        <div class="draggable" draggable="true" data-correct="get in">get in</div>
+        <div class="draggable" draggable="true" data-correct="slow down">slow down</div>
+      </div>
+
+      <div class="quiz-sentences">
+          <p>1. I need to <span class="dropzone" data-correct="pick up"></span> my sister from the airport.</p>
+          <p>2. We decided to <span class="dropzone" data-correct="drive by"></span> the old house just to see it.</p>
+          <p>3. Could you please <span class="dropzone" data-correct="drop off"></span> this package at the post office?</p>
+          <p>4. Don't <span class="dropzone" data-correct="speed up"></span> in a residential area!</p>
+          <p>5. The police car signaled for him to <span class="dropzone" data-correct="pull over"></span>.</p>
+          <p>6. Be careful when you <span class="dropzone" data-correct="get out of"></span> the car on the busy street.</p>
+          <p>7. Just <span class="dropzone" data-correct="get in"></span> the car, we're running late!</p>
+          <p>8. The road is icy, you need to <span class="dropzone" data-correct="slow down"></span>.</p>
+      </div>
+
+
+      <div class="total-points-container">
+           Total Points: <span id="total-points">0</span> /8
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+<script>
+  // Initialize MDL components after the page loads
+  window.addEventListener('load', function() {
+    componentHandler.upgradeAllRegistered();
+  });
+
+  // JavaScript to handle card flipping (from Document 1)
+  const flashcards = document.querySelectorAll('.flashcard');
+
+  flashcards.forEach(card => {
+    card.addEventListener('click', () => {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // JavaScript for Drag and Drop Quiz (Updated for new quiz)
+
+  let totalPoints = 0; // Initialize total points
+  const totalQuestions = 8; // Total number of questions
+
+  const draggables = document.querySelectorAll('.draggable-pool .draggable'); // Select draggables only from the pool
+  const dropzones = document.querySelectorAll('.quiz-sentences .dropzone'); // Select dropzones only within sentences
+  const totalPointsSpan = document.getElementById('total-points');
+
+  // Update total points display initially
+  totalPointsSpan.textContent = totalPoints;
+  document.querySelector('.total-points-container').lastChild.textContent = ` /${totalQuestions}`; // Update total count display
+
+
+  draggables.forEach(draggable => {
+      draggable.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text/plain', draggable.dataset.correct); // Set data to the correct answer for potential future use, or just element ID
+          draggable.classList.add('dragging');
+          // Add a slight delay to hide the original element clone during drag
+          setTimeout(() => {
+              draggable.style.visibility = 'hidden';
+          }, 0);
+      });
+
+      draggable.addEventListener('dragend', () => {
+          // Make all draggables in the pool visible again if they haven't been dropped
+          document.querySelectorAll('.draggable-pool .draggable').forEach(drag => {
+              // Only make visible if parent is the pool (not a dropzone)
+              if (drag.parentElement && drag.parentElement.classList.contains('draggable-pool')) {
+                 drag.style.visibility = 'visible';
+              }
+          });
+          draggable.classList.remove('dragging');
+      });
+  });
+
+  dropzones.forEach(dropzone => {
+      dropzone.addEventListener('dragover', e => {
+          e.preventDefault(); // Allow drop
+          dropzone.classList.add('draggingover');
+      });
+
+      dropzone.addEventListener('dragleave', () => {
+          dropzone.classList.remove('draggingover');
+      });
+
+      dropzone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          dropzone.classList.remove('draggingover');
+
+          // Prevent dropping if the dropzone already has content
+          if (dropzone.children.length > 0) {
+              console.log("Drop zone already occupied.");
+              // Make the dragged item visible again as it wasn't dropped
+              const dragged = document.querySelector('.draggable.dragging');
+              if (dragged) dragged.style.visibility = 'visible';
+              return; // Exit the drop handler
+          }
+
+          const draggedElement = document.querySelector('.draggable.dragging');
+          if (draggedElement) {
+               // Clone the dragged element before appending
+              const droppedElement = draggedElement.cloneNode(true);
+
+              // Remove dragging class from the clone
+              droppedElement.classList.remove('dragging');
+              // Make the clone visible immediately
+              droppedElement.style.visibility = 'visible';
+
+              // Append the cloned element to the dropzone
+              dropzone.appendChild(droppedElement);
+
+              // Hide the original element from the pool permanently
+              draggedElement.style.display = 'none'; // Hide instead of just visibility
+
+              // Get correct answer from data attribute on the *original* dragged element
+              const correctAnswer = draggedElement.dataset.correct;
+              // Get the text content from the *dropped* element
+              const droppedValue = droppedElement.textContent.trim();
+
+              // Check if the dropped verb is correct for this dropzone
+              // We need a way to know the correct answer for *this specific dropzone*
+              // A simple way is to match the sentence context or add data attributes to dropzones.
+              // Let's assume the sentences are in the same order as the draggables for now,
+              // or better, add a data attribute to the dropzone itself indicating the correct answer.
+              // For simplicity in modifying existing structure, let's add data-correct to dropzones.
+
+              // *** Modification Needed: Add data-correct attributes to the dropzone spans in HTML ***
+              // e.g., <span class="dropzone" data-correct="pick up"></span>
+
+              const dropzoneCorrectAnswer = dropzone.dataset.correct; // Get correct answer from dropzone
+
+              let wasCorrectBefore = dropzone.classList.contains('correct');
+              let isCorrectNow = (droppedValue === dropzoneCorrectAnswer);
+
+
+              if (isCorrectNow) {
+                  dropzone.classList.add('correct');
+                  dropzone.classList.remove('incorrect');
+                  // If it wasn't correct before, increment score
+                  if (!wasCorrectBefore) {
+                     totalPoints++;
+                     totalPointsSpan.textContent = totalPoints;
+                  }
+              } else {
+                  dropzone.classList.add('incorrect');
+                  dropzone.classList.remove('correct');
+                   // If it was correct before, decrement score
+                  if (wasCorrectBefore) {
+                       totalPoints--;
+                       totalPointsSpan.textContent = totalPoints;
+                  }
+              }
+
+               // Disable dragging for the dropped element clone
+               droppedElement.draggable = false;
+               droppedElement.style.cursor = 'default';
+
+               // Optional: Prevent clicking/interaction on dropped item
+               droppedElement.style.pointerEvents = 'none';
+          }
+      });
+  });
+
+  // --- IMPORTANT ---
+  // You need to manually add data-correct attributes to the <span class="dropzone">
+  // elements in the HTML above for the scoring to work correctly.
+  // For example:
+  // <p>1. I need to <span class="dropzone" data-correct="pick up"></span> my sister from the airport.</p>
+  // <p>2. We decided to <span class="dropzone" data-correct="drive by"></span> the old house just to see it.</p>
+  // ... and so on for all 8 sentences.
+  // I have added comments above the script block reminding you to do this.
+  // Let's add them directly into the HTML now.
+
+</script>
+
+</body>
+</html>
